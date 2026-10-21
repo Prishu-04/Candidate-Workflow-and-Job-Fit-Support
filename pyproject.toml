@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "domain-rag-copilot"
 version = "0.1.0"
 description = "Evidence-grounded RAG assistant for candidate workflow and job-fit support (synthetic data only)"
-requires-python = "==3.14"
+requires-python = ">=3.11,<3.15"
 dependencies = [
     "fastapi>=0.115,<1",
     "uvicorn>=0.30,<1",
