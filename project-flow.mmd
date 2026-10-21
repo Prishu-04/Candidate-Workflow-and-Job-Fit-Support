@@ -1,0 +1,25 @@
+flowchart TD
+    A[Approved source data: fictional resumes, job descriptions, structured assessments, optional skills taxonomy] --> B[Ingestion: validate schema, provenance, redact PII, normalize]
+    B --> C[Canonical records and data lineage]
+    C --> D[Parse and section-aware chunking with metadata]
+    D --> E[Embedding model]
+    E --> F[(Qdrant vector index)]
+    D --> G[BM25 keyword index]
+    F --> H[Hybrid retrieval and reciprocal-rank fusion]
+    G --> H
+    H --> I[Cross-encoder reranker]
+    I --> J{Enough relevant evidence?}
+    J -->|Yes| K[LLM generation grounded only in retrieved context]
+    J -->|No| L[Abstain, explain evidence gap, or ask a clarification]
+    K --> M[Validate source IDs, citations, schema, and guardrails]
+    L --> M
+    C --> N[Job-fit evidence comparison]
+    N --> O[Supported / not found / unclear requirement evidence]
+    O --> P[Human review; no automatic hiring decision]
+    M --> Q[FastAPI application API and access control]
+    P --> Q
+    Q --> R[Next.js recruiter and hiring-manager interface]
+    Q --> S[Structured logs, latency/cost metrics, feedback]
+    T[Curated golden evaluation set] --> U[Retrieval, answer, citation, refusal, safety evaluation]
+    U --> V[Improve chunking, retrieval, prompts, and models]
+    V -. regression test .-> T
