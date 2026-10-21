@@ -311,3 +311,73 @@ A strong resume bullet should include only results you actually measured. For ex
 - NIST AI Risk Management Framework: <https://www.nist.gov/itl/ai-risk-management-framework>
 
 Dataset metadata and hosted services can change. Recheck the source page and license before each use or redistribution.
+
+## 14. Developer setup (Stage 01)
+
+Only the API with a `/health` endpoint exists at this stage. There is no data, index, LLM call or frontend yet.
+
+### Requirements
+
+- Python 3.11 to 3.13. Python 3.12 is the tested default.
+- Docker is optional.
+
+### Install
+
+Using conda:
+
+```bash
+conda create -n rag-copilot python=3.12 -y
+conda activate rag-copilot
+pip install -e ".[dev]"
+```
+
+Using venv instead:
+
+```bash
+python -m venv .venv
+# Windows: .venv\Scripts\activate    macOS/Linux: source .venv/bin/activate
+pip install -e ".[dev]"
+```
+
+The version ranges in `pyproject.toml` are lower and upper bounds. After the first successful install, save the exact versions you tested:
+
+```bash
+pip freeze > requirements.lock.txt
+```
+
+### Configuration
+
+The defaults work for local development, so a `.env` file is optional. To change a setting, copy the example file and edit it:
+
+```bash
+# macOS/Linux
+cp .env.example .env
+# Windows (cmd)
+copy .env.example .env
+```
+
+`.env` is ignored by Git. Never put real keys in `.env.example`. The app refuses to start if a setting is invalid (for example an unknown `APP_ENV`, or a `FRONTEND_ORIGIN` with a wildcard).
+
+### Run, test, check
+
+```bash
+uvicorn app.main:app --reload
+pytest
+ruff check .
+ruff format --check .
+```
+
+With the server running, open <http://127.0.0.1:8000/health>. The interactive API docs are at <http://127.0.0.1:8000/docs>.
+
+### Docker
+
+```bash
+docker compose up --build
+```
+
+Only the `api` service is defined. Qdrant is added in Stage 05. PostgreSQL is added in Stage 12 if it is needed.
+
+### Notes
+
+- Logs are JSON lines. Fields such as `text`, `query` and `prompt` are replaced with `[omitted]`.
+- CORS is not enabled yet. Stage 13 will allow only the origin in `FRONTEND_ORIGIN`.
